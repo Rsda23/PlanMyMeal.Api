@@ -22,5 +22,12 @@ namespace PlanMyMeal.Api.MongoHelpers
         {
             return _database;
         }
+
+        public static FilterDefinition<T> BuildFindByChampRequest<T>(string champ, string value)
+        {
+            var builder = Builders<T>.Filter;
+            var filter = builder.Eq(champ, value);
+            return filter;
+        }
     }
 }
