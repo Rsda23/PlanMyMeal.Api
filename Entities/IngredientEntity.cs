@@ -1,9 +1,11 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using PlanMyMeal.Api.Interface.Map;
+using PlanMyMeal.Domain.Models;
 
 namespace PlanMyMeal.Api.Entities
 {
-    public class IngredientEntity
+    public class IngredientEntity : IMapToDomain<Ingredient>
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -29,5 +31,19 @@ namespace PlanMyMeal.Api.Entities
             UserId = userId;
             Title = title;
         }
+
+        public Ingredient MapToDomain()
+        {
+            Ingredient result = new Ingredient
+            {
+                IngredientId = IngredientId,
+                RecipeId = RecipeId,
+                UserId = UserId,
+                Title = Title
+            };
+
+            return result;
+        }
+
     }
 }
