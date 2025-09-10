@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace PlanMyMeal.Api.MongoHelpers
 {
@@ -27,6 +28,14 @@ namespace PlanMyMeal.Api.MongoHelpers
         {
             var builder = Builders<T>.Filter;
             var filter = builder.Eq(champ, value);
+            return filter;
+        }
+
+        public static FilterDefinition<T> BuildFindByIdRequest<T>(string id)
+        {
+            var builder = Builders<T>.Filter;
+            ObjectId objectId = ObjectId.Parse(id);
+            var filter = builder.Eq("_id", objectId);
             return filter;
         }
     }
