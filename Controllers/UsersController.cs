@@ -14,9 +14,15 @@ namespace PlanMyMeal.Api.Controllers
         }
 
         [HttpGet("GetUserByEmail")]
-        public User GetUserByEmail(string email)
+        public User GetUserByEmail([FromQuery] string email)
         {
             return _service.GetUserByEmail(email);
+        }
+
+        [HttpGet("GetUserById")]
+        public User GetUserById([FromQuery]string id)
+        {
+            return _service.GetUserById(id);
         }
     }
 }

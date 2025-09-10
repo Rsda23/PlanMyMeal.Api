@@ -25,5 +25,15 @@ namespace PlanMyMeal.Api.Service
             return user.MapToDomain();
         }
 
+        public User GetUserById(string id)
+        {
+            var collection = _database.GetCollection<UserEntity>("users");
+
+            var filter = MongoHelper.BuildFindByIdRequest<UserEntity>(id);
+            UserEntity user = collection.Find(filter).FirstOrDefault();
+
+            return user.MapToDomain();
+        }
+
     }
 }
