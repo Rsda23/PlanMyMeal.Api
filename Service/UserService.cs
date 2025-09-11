@@ -37,8 +37,7 @@ namespace PlanMyMeal.Api.Service
 
         public void PostUser(string pseudo, string email, string hashedPassword)
         {
-            DateTime date = DateTime.Now;
-            UserEntity user = new UserEntity(pseudo, email, hashedPassword, date);
+            UserEntity user = new UserEntity(pseudo, email, hashedPassword);
             if (_database == null)
             {
                 throw new InvalidOperationException("Error collection MongoDB");
@@ -46,25 +45,6 @@ namespace PlanMyMeal.Api.Service
 
             var collection = _database.GetCollection<UserEntity>("users");
             collection.InsertOne(user);
-
         }
-
-        public void PostUser(string pseudo, string email, string hashedPassword)
-        {
-            DateTime createAt = DateTime.Now;
-            DateTime lastLoginAt = DateTime.Now;
-            string image = string.Empty;
-
-            UserEntity user = new UserEntity(image, image, pseudo, email, hashedPassword, createAt, lastLoginAt);
-            if (_database == null)
-            {
-                throw new InvalidOperationException("Error collection MongoDB");
-            }
-
-            var collection = _database.GetCollection<UserEntity>("users");
-            collection.InsertOne(user);
-
-        }
-
     }
 }

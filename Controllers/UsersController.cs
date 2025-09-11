@@ -24,5 +24,11 @@ namespace PlanMyMeal.Api.Controllers
         {
             return _service.GetUserById(id);
         }
+
+        [HttpPost("PostUser")]
+        public void PostUser([FromBody] User user)
+        {
+            _service.PostUser(user.Pseudo, user.Email, user.HashedPassword);
+        }
     }
 }
