@@ -12,6 +12,7 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    
     permissions:
       contents: read #This is required for actions/checkout
       packages: read
@@ -23,6 +24,7 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
+          include-prerelease: true
           
       - name: Configure GitHub Nuget source
         env:
@@ -44,6 +46,9 @@ jobs:
   deploy:
     runs-on: windows-latest
     needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     
     steps:
       - name: Download artifact from build job
@@ -57,7 +62,7 @@ jobs:
         with:
           app-name: 'PlanMyMeal'
           slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_6BC39790D4DB47B9BBC5A6DE804FB34A }}
           package: .
 
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_6BC39790D4DB47B9BBC5A6DE804FB34A }}
 
