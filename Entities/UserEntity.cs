@@ -33,15 +33,13 @@ namespace PlanMyMeal.Api.Entities
 
         }
 
-        public UserEntity(string role, string imageUrl, string pseudo, string email, string hashedPassword, DateTime createdAt, DateTime lastLoginAt)
+        public UserEntity(string pseudo, string email, string hashedPassword)
         {
-            Role = role;
-            ImageUrl = imageUrl;
             Pseudo = pseudo;
             Email = email;
             HashedPassword = hashedPassword;
-            CreatedAt = createdAt;
-            LastLoginAt = lastLoginAt;
+            CreatedAt = DateTime.UtcNow;
+            LastLoginAt = DateTime.UtcNow;
         }
 
         public User MapToDomain()
