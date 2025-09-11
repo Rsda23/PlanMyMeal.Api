@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.25.0" />
     <PackageReference Include="MongoDB.Driver" Version="3.4.3" />
     <PackageReference Include="PlanMyMeal.Domain" Version="1.2.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />

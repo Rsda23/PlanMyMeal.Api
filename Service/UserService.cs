@@ -1,4 +1,6 @@
-﻿using MongoDB.Driver;
+﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using MongoDB.Driver;
 using PlanMyMeal.Api.Entities;
 using PlanMyMeal.Api.Interface;
 using PlanMyMeal.Api.MongoHelpers;
@@ -9,10 +11,12 @@ namespace PlanMyMeal.Api.Service
     public class UserService : IUserService
     {
         private readonly IMongoDatabase _database;
+        private readonly IConfiguration _configuration;
 
-        public UserService(MongoHelper mongoHelpers) 
+        public UserService(MongoHelper mongoHelpers, IConfiguration configuration) 
         { 
             _database = mongoHelpers.GetDatabase();
+            _configuration = configuration;
         }
 
         public User GetUserByEmail(string email)
@@ -57,6 +61,46 @@ namespace PlanMyMeal.Api.Service
                 Builders<UserEntity>.Update.Set(f => f.ImageUrl, imageUrl));
 
             collection.UpdateOne(filter, update);
+        }
+
+        public async Task<string> PostImageToBlob(string userId, IFormFile imageUrl)
+        {
+            if (imageUrl == null || imageUrl.Length == 0)
+            {
+                throw new ArgumentException("Aucune image reçue");
+            }
+
+            var connectionString = _configuration["AzureBlob:ConnectionString"];
+            var containerName = _configuration["AzureBlob:Containers:Users"];
+
+            var blobServiceClient = new BlobServiceClient(connectionString);
+            var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+
+            var user = GetUserById(userId);
+            if (user != null && !string.IsNullOrEmpty(user.ImageUrl) && !user.ImageUrl.Contains("default"))
+            {
+                var oldFileName = Path.GetFileName(new Uri(user.ImageUrl).LocalPath);
+                var oldBlobClient = containerClient.GetBlobClient(oldFileName);
+
+                await oldBlobClient.DeleteIfExistsAsync();
+            }
+
+            //Eviter un conflit du aux noms
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageUrl.FileName);
+            var blobClient = containerClient.GetBlobClient(fileName);
+
+            var blobHttpHeaders = new BlobHttpHeaders
+            {
+                ContentType = imageUrl.ContentType
+            };
+
+            await blobClient.UploadAsync(imageUrl.OpenReadStream(), new BlobUploadOptions
+            {
+                HttpHeaders = blobHttpHeaders
+            });
+
+            return blobClient.Uri.ToString();
+
         }
     }
 }
