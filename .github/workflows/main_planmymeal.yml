@@ -22,6 +22,11 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
+          
+      - name: Configure GitHub Nuget source
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: dotnet nuget add source "https://nuget.pkg.github.com/Rsda23/index.json" --name github --username Rsda23 --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
@@ -52,4 +57,5 @@ jobs:
           app-name: 'PlanMyMeal'
           slot-name: 'Production'
           package: .
+
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_6BC39790D4DB47B9BBC5A6DE804FB34A }}
