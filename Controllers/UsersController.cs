@@ -30,5 +30,11 @@ namespace PlanMyMeal.Api.Controllers
         {
             _service.PostUser(user.Pseudo, user.Email, user.HashedPassword);
         }
+
+        [HttpPut("PutImage")]
+        public void PutImage([FromQuery] string userId, [FromQuery] string imageUrl)
+        {
+            _service.PutImage(userId, imageUrl);
+        }
     }
 }

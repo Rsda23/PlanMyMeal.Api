@@ -46,5 +46,17 @@ namespace PlanMyMeal.Api.Service
             var collection = _database.GetCollection<UserEntity>("users");
             collection.InsertOne(user);
         }
+
+        public void PutImage(string userId, string imageUrl)
+        {
+            var collection = _database.GetCollection<UserEntity>("users");
+
+            var filter = MongoHelper.BuildFindByIdRequest<UserEntity>(userId);
+
+            var update = Builders<UserEntity>.Update.Combine(
+                Builders<UserEntity>.Update.Set(f => f.ImageUrl, imageUrl));
+
+            collection.UpdateOne(filter, update);
+        }
     }
 }
