@@ -31,12 +31,6 @@ namespace PlanMyMeal.Api.Controllers
             _service.PostUser(user.Pseudo, user.Email, user.HashedPassword);
         }
 
-        [HttpPost("PostImageToBlob")]
-        public Task<string> PostImageToBlob([FromQuery] string userId, IFormFile imageUrl)
-        {
-            return _service.PostImageToBlob(userId, imageUrl);
-        }
-
         [HttpPut("PutImage")]
         public Task PutImage([FromQuery] string userId, [FromQuery] string imageUrl)
         {

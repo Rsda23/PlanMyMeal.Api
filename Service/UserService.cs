@@ -1,7 +1,4 @@
-﻿using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
-using MongoDB.Bson;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using PlanMyMeal.Api.Entities;
 using PlanMyMeal.Api.Interface;
 using PlanMyMeal.Api.MongoHelpers;
@@ -50,49 +47,6 @@ namespace PlanMyMeal.Api.Service
 
             var collection = _database.GetCollection<UserEntity>("users");
             collection.InsertOne(user);
-        }
-
-        public async Task<string> PostImageToBlob(string userId, IFormFile image)
-        {
-            if (image == null || image.Length == 0)
-            {
-                throw new ArgumentException("Aucune image reçue");
-            }
-
-            var connectionString = _configuration["AzureBlob:ConnectionString"];
-            var containerName = _configuration["AzureBlob:Containers:Users"];
-
-            var blobServiceClient = new BlobServiceClient(connectionString);
-            var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
-
-            var user = GetUserById(userId);
-            if (user != null && !string.IsNullOrEmpty(user.ImageUrl) && !user.ImageUrl.Contains("default"))
-            {
-                var oldFileName = Path.GetFileName(new Uri(user.ImageUrl).LocalPath);
-                var oldBlobClient = containerClient.GetBlobClient(oldFileName);
-
-                await oldBlobClient.DeleteIfExistsAsync();
-            }
-
-            //Eviter un conflit du aux noms
-            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
-            var blobClient = containerClient.GetBlobClient(fileName);
-
-            var blobHttpHeaders = new BlobHttpHeaders
-            {
-                ContentType = image.ContentType
-            };
-
-            await blobClient.UploadAsync(image.OpenReadStream(), new BlobUploadOptions
-            {
-                HttpHeaders = blobHttpHeaders
-            });
-
-            var imageUrl = blobClient.Uri.ToString();
-
-            await PutImage(userId, imageUrl);
-
-            return blobClient.Uri.ToString();
         }
 
         public Task PutImage(string userId, string imageUrl)
