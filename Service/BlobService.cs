@@ -38,6 +38,27 @@ namespace PlanMyMeal.Api.Service
         {
             await _blobService.GetBlobContainerClient(container).GetBlobClient(blobName).DeleteIfExistsAsync();
         }
+
+        public string GetImageFromMin(string container, string blobName, TimeSpan time)
+        {
+            var blob = _blobService.GetBlobContainerClient(container).GetBlobClient(blobName);
+
+            if (!blob.CanGenerateSasUri)
+            {
+                throw new InvalidOperationException("Impossible de générer de SAS.");
+            }
+
+            var sas = new BlobSasBuilder
+            {
+                BlobContainerName = blob.BlobContainerName,
+                BlobName = blob.Name,
+                Resource = "b",
+                StartsOn = DateTimeOffset.UtcNow.AddMinutes(-2),
+                ExpiresOn = DateTimeOffset.UtcNow.Add(time)
+            };
+            sas.SetPermissions(BlobSasPermissions.Read);
+            return blob.GenerateSasUri(sas).ToString();
+        }
     }
 
 }
