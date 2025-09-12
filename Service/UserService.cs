@@ -1,5 +1,6 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using PlanMyMeal.Api.Entities;
 using PlanMyMeal.Api.Interface;
@@ -51,21 +52,9 @@ namespace PlanMyMeal.Api.Service
             collection.InsertOne(user);
         }
 
-        public void PutImage(string userId, string imageUrl)
+        public async Task<string> PostImageToBlob(string userId, IFormFile image)
         {
-            var collection = _database.GetCollection<UserEntity>("users");
-
-            var filter = MongoHelper.BuildFindByIdRequest<UserEntity>(userId);
-
-            var update = Builders<UserEntity>.Update.Combine(
-                Builders<UserEntity>.Update.Set(f => f.ImageUrl, imageUrl));
-
-            collection.UpdateOne(filter, update);
-        }
-
-        public async Task<string> PostImageToBlob(string userId, IFormFile imageUrl)
-        {
-            if (imageUrl == null || imageUrl.Length == 0)
+            if (image == null || image.Length == 0)
             {
                 throw new ArgumentException("Aucune image reçue");
             }
@@ -86,21 +75,38 @@ namespace PlanMyMeal.Api.Service
             }
 
             //Eviter un conflit du aux noms
-            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageUrl.FileName);
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
             var blobClient = containerClient.GetBlobClient(fileName);
 
             var blobHttpHeaders = new BlobHttpHeaders
             {
-                ContentType = imageUrl.ContentType
+                ContentType = image.ContentType
             };
 
-            await blobClient.UploadAsync(imageUrl.OpenReadStream(), new BlobUploadOptions
+            await blobClient.UploadAsync(image.OpenReadStream(), new BlobUploadOptions
             {
                 HttpHeaders = blobHttpHeaders
             });
 
-            return blobClient.Uri.ToString();
+            var imageUrl = blobClient.Uri.ToString();
 
+            await PutImage(userId, imageUrl);
+
+            return blobClient.Uri.ToString();
+        }
+
+        public Task PutImage(string userId, string imageUrl)
+        {
+            var collection = _database.GetCollection<UserEntity>("users");
+
+            var filter = MongoHelper.BuildFindByIdRequest<UserEntity>(userId);
+
+            var update = Builders<UserEntity>.Update.Combine(
+                Builders<UserEntity>.Update.Set(f => f.ImageUrl, imageUrl));
+
+            collection.UpdateOne(filter, update);
+
+            return Task.CompletedTask;
         }
     }
 }

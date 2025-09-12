@@ -38,9 +38,9 @@ namespace PlanMyMeal.Api.Controllers
         }
 
         [HttpPut("PutImage")]
-        public void PutImage([FromQuery] string userId, [FromQuery] string imageUrl)
+        public Task PutImage([FromQuery] string userId, [FromQuery] string imageUrl)
         {
-            _service.PutImage(userId, imageUrl);
+            return _service.PutImage(userId, imageUrl);
         }
     }
 }
