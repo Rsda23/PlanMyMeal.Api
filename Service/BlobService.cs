@@ -33,6 +33,11 @@ namespace PlanMyMeal.Api.Service
 
             return $"{container}/{blobName}";
         }
+
+        public async Task DeleteImage(string container, string blobName)
+        {
+            await _blobService.GetBlobContainerClient(container).GetBlobClient(blobName).DeleteIfExistsAsync();
+        }
     }
 
 }
