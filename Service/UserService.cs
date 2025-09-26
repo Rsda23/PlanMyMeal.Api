@@ -9,12 +9,10 @@ namespace PlanMyMeal.Api.Service
     public class UserService : IUserService
     {
         private readonly IMongoDatabase _database;
-        private readonly IConfiguration _configuration;
 
-        public UserService(MongoHelper mongoHelpers, IConfiguration configuration) 
+        public UserService(MongoHelper mongoHelpers) 
         { 
             _database = mongoHelpers.GetDatabase();
-            _configuration = configuration;
         }
 
         public User GetUserByEmail(string email)
