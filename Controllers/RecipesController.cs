@@ -30,5 +30,11 @@ namespace PlanMyMeal.Api.Controllers
         {
             _recipeService.PostRecipe(recipe);
         }
+
+        [HttpPost("PostFullRecipe")]
+        public void PostFullRecipe(Recipe recipe)
+        {
+            _recipeService.PostFullRecipe(recipe);
+        }
     }
 }

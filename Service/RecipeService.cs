@@ -47,6 +47,29 @@ namespace PlanMyMeal.Api.Service
             collection.InsertOne(newRecipe);
         }
 
+        public void PostFullRecipe(Recipe recipe)
+        {
+            if (_database == null)
+            {
+                throw new InvalidOperationException("Erreur avec la database");
+            }
+
+            var collection = _database.GetCollection<RecipeEntity>("recipes");
+
+            List<IngredientEntity> ingredients = new List<IngredientEntity>();
+
+            foreach (var item in recipe.Ingredients)
+            {
+                var t = new IngredientEntity(item.RecipeId, item.UserId, item.Title);
+
+                ingredients.Add(t);
+            }
+
+            RecipeEntity newRecipe = new RecipeEntity(recipe.UserId, recipe.Title, recipe.ImageUrl, recipe.Difficulty, recipe.TotalTimeMinutes, recipe.Type, recipe.Calories, recipe.Diets, recipe.Tags, ingredients);
+
+            collection.InsertOne(newRecipe);
+        }
+
         public List<Recipe> MapToList(List<RecipeEntity> data)
         {
             var result = new List<Recipe>();
