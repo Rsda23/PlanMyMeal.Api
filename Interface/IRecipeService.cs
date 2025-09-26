@@ -5,5 +5,6 @@ namespace PlanMyMeal.Api.Interface
     public interface IRecipeService
     {
         public Recipe GetRecipeById(string recipeId);
+        public List<Recipe> GetAllRecipes();
     }
 }

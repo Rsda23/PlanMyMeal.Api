@@ -18,5 +18,11 @@ namespace PlanMyMeal.Api.Controllers
         {
             return _recipeService.GetRecipeById(recipeId);
         }
+
+        [HttpGet("GetAllRecipes")]
+        public List<Recipe> GetAllRecipes()
+        {
+            return _recipeService.GetAllRecipes();
+        }
     }
 }

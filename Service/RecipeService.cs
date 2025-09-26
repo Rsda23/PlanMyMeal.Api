@@ -24,5 +24,23 @@ namespace PlanMyMeal.Api.Service
 
             return recipe.MapToDomain();
         }
+
+        public List<Recipe> GetAllRecipes()
+        {
+            var collection = _database.GetCollection<RecipeEntity>("recipes");
+            List<RecipeEntity> recipes = collection.Find(Builders<RecipeEntity>.Filter.Empty).ToList();
+
+            return MapToList(recipes);
+        }
+
+        public List<Recipe> MapToList(List<RecipeEntity> data)
+        {
+            var result = new List<Recipe>();
+            foreach (var item in data)
+            {
+                result.Add(item.MapToDomain());
+            }
+            return result;
+        }
     }
 }
