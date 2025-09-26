@@ -12,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IRecipeService, RecipeService>();
 builder.Services.AddTransient<MongoHelper>();
 
 var app = builder.Build();
