@@ -6,5 +6,6 @@ namespace PlanMyMeal.Api.Interface
     {
         public Recipe GetRecipeById(string recipeId);
         public List<Recipe> GetAllRecipes();
+        public void PostRecipe(Recipe recipe);
     }
 }

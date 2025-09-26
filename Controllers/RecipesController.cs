@@ -24,5 +24,11 @@ namespace PlanMyMeal.Api.Controllers
         {
             return _recipeService.GetAllRecipes();
         }
+
+        [HttpGet("PostRecipe")]
+        public void PostRecipe(Recipe recipe)
+        {
+            _recipeService.PostRecipe(recipe);
+        }
     }
 }

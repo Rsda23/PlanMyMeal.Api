@@ -33,6 +33,20 @@ namespace PlanMyMeal.Api.Service
             return MapToList(recipes);
         }
 
+        public void PostRecipe(Recipe recipe)
+        {
+            if (_database == null)
+            {
+                throw new InvalidOperationException("Erreur avec la database");
+            }
+
+            var collection = _database.GetCollection<RecipeEntity>("recipes");
+
+            RecipeEntity newRecipe = new RecipeEntity(recipe.Title, recipe.Difficulty, recipe.Type);
+
+            collection.InsertOne(newRecipe);
+        }
+
         public List<Recipe> MapToList(List<RecipeEntity> data)
         {
             var result = new List<Recipe>();

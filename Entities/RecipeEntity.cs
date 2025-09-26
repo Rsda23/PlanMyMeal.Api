@@ -63,6 +63,20 @@ namespace PlanMyMeal.Api.Entities
             Type = type;
         }
 
+        public RecipeEntity(string userId, string title, string imageUrl, string difficulty, int totalTimeMinutes, string type, int calories, List<string> diets, List<string> tags, List<IngredientEntity> ingredients)
+        {
+            UserId = userId;
+            Title = title;
+            ImageUrl = imageUrl;
+            Difficulty = difficulty;
+            TotalTimeMinutes = totalTimeMinutes;
+            Type = type;
+            Calories = calories;
+            Diets = diets;
+            Tags = tags;
+            Ingredients = ingredients;
+        }
+
         public Recipe MapToDomain()
         {
             Recipe result = new Recipe
