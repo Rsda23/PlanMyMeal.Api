@@ -10,9 +10,9 @@ namespace PlanMyMeal.Api.Service
     {
         private readonly IMongoDatabase _database;
 
-        public RecipeService(IMongoDatabase database)
+        public RecipeService(MongoHelper mongoHelper)
         {
-            _database = database;
+            _database = mongoHelper.GetDatabase();
         }
 
         public Recipe GetRecipeById(string recipeId)
