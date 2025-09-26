@@ -1,5 +1,8 @@
 ﻿using MongoDB.Driver;
+using PlanMyMeal.Api.Entities;
 using PlanMyMeal.Api.Interface;
+using PlanMyMeal.Api.MongoHelpers;
+using PlanMyMeal.Domain.Models;
 
 namespace PlanMyMeal.Api.Service
 {
@@ -10,6 +13,16 @@ namespace PlanMyMeal.Api.Service
         public RecipeService(IMongoDatabase database)
         {
             _database = database;
+        }
+
+        public Recipe GetRecipeById(string recipeId)
+        {
+            var collection = _database.GetCollection<RecipeEntity>("recipes");
+
+            var filter = MongoHelper.BuildFindByIdRequest<RecipeEntity>(recipeId);
+            RecipeEntity recipe = collection.Find(filter).FirstOrDefault();
+
+            return recipe.MapToDomain();
         }
     }
 }

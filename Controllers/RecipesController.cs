@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PlanMyMeal.Api.Interface;
+using PlanMyMeal.Domain.Models;
 
 namespace PlanMyMeal.Api.Controllers
 {
@@ -10,6 +11,12 @@ namespace PlanMyMeal.Api.Controllers
         public RecipesController(IRecipeService recipeService)
         {
             _recipeService = recipeService;
+        }
+
+        [HttpGet("GetRecipeById")]
+        public Recipe GetRecipeById([FromQuery]string recipeId)
+        {
+            return _recipeService.GetRecipeById(recipeId);
         }
     }
 }
